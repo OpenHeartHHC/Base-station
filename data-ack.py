@@ -25,6 +25,58 @@ from termcolor import colored
 
 colored
 
+
+qrs_in_progress = False
+hr_current = 0
+
+def check_qrs(data):
+    j = 0
+    qrs_detected = []
+    global qrs_in_progress
+
+    for i in range(len(data)):
+
+        if data[i] > 700:
+            if qrs_in_progress == False :
+                qrs_in_progress = True
+                qrs_detected.append(i)
+                j += 1
+            elif  data[qrs_detected[j-1]] < data[i]:
+                qrs_detected[j-1] = i
+        else:
+            qrs_in_progress = False
+    return qrs_detected
+
+
+def heart_rate(data, frequency = 100.):
+    hr = []
+    all_hr_sec = []
+    global hr_current
+
+    qrs_detected = check_qrs(data)
+    for i in range(len(qrs_detected)):
+        if i > 0 :
+            hr_frequency = (qrs_detected[i] - qrs_detected[i-1]) / frequency
+            hr_tmp = 60.0/hr_frequency
+            hr.append(hr_tmp)
+
+    for i in range(int(len(data) / frequency)):
+        nb_val = 0
+        hr_second = 0
+
+        for j in range(len(qrs_detected)):
+            if j > 0 :
+                if  ((i * frequency) <= qrs_detected[j]) and (qrs_detected[j] < ((i+1) * frequency)):
+                    hr_second += hr[j-1]
+                    nb_val += 1
+        if(nb_val):
+            hr_current = hr_second / nb_val
+        all_hr_sec.append(hr_current)
+
+
+    return all_hr_sec
+
+
 def ConnectBitalino(macAddress, batThresh=30, frequency=100):
 	acqChannels = [2]
 	digitalOutput = [0,0,0,0]
@@ -57,8 +109,12 @@ def AcquireSamples(nSamples=1000):
 
 	# Read samples
 	while True:
-		print device.read(nSamples)
-		time.sleep(1)
+		res = device.read(nSamples)[:,-1]
+
+                hr = heart_rate (res)
+                print hr
+
+
 		#print device.read(nSamples)[0][5]
 		#for j in range(0,10):
 		#	samples.append(device.read(nSamples)[j][5])
