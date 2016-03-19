@@ -101,7 +101,8 @@ def ecgMode(extra, option=0):
 	print colored("Output Mode : %s"%(outputMode), "yellow")
 
 	try:
-		ConnectBitalino("20:15:10:26:65:41")
+#		ConnectBitalino("20:15:10:26:65:41")
+		ConnectBitalino("20:15:10:26:64:85")
 		AcquireSamples()
 		while True:
 			pass
