@@ -25,16 +25,16 @@ from termcolor import colored
 
 colored
 
-def ConnectBitalino(macAddress, batThresh=30, sampleRate=1000):
-	acqChannels = [3]
-	digitalOutput = [0,0,1,1]
+def ConnectBitalino(macAddress, batThresh=30, frequency=100):
+	acqChannels = [2]
+	digitalOutput = [0,0,0,0]
 
 	global device
 	device = bitalino.BITalino(macAddress)
 	device.battery(batThresh)
 	print colored("Connected to : %s"%(device.version()), "green")
 
-	device.start(sampleRate, acqChannels)
+	device.start(frequency, acqChannels)
 
 
 def DisconnectBitalino():
@@ -47,7 +47,7 @@ def DisconnectBitalino():
 		device.close()
 
 
-def AcquireSamples(nSamples=10):
+def AcquireSamples(nSamples=1000):
 	global device
 
 	colored("Start samples acquisition", "green")
