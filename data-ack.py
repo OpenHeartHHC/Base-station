@@ -50,7 +50,7 @@ def DisconnectBitalino():
 def AcquireSamples(nSamples=10):
 	global device
 
-	colored("Start samples acauisition", "green")
+	colored("Start samples acquisition", "green")
 
 	samples = []
 	i=0
