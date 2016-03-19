@@ -7,12 +7,12 @@ Opens accelerometric data, parse it
 from math import sqrt
 import sys
 
-def stepper(x, y, z):
+def step_calc(x, y, z):
 	final = []
 	average = []
 
 	for i in range(len(x)):
-		final.append(sqrt(xval[i]**2 + yval[i]**2 + zval[i]**2))
+		final.append(sqrt(x[i]**2 + y[i]**2 + z[i]**2))
 
 
 	average = 0
@@ -24,12 +24,13 @@ def stepper(x, y, z):
 	belowed = False
 	thresh = 50
 	for index in range(len(final)):
-		if final[index] > average and belowed > thresh:
+		if final[index] > average+10 and belowed > thresh:
 			steps += 1
 			belowed = 0
 		elif final[index] < average:
 			belowed += 1
 
+        steps *= 2
 	print "Number of steps : %d"%(steps)
 
 	return steps

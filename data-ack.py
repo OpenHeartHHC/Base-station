@@ -20,6 +20,7 @@ import time
 import requests
 import json
 import sys
+from stepper import step_calc
 
 
 from math import *
@@ -27,24 +28,6 @@ from termcolor import colored
 
 hr_current = 0
 
-def check_podo(data):
-    pas = 0
-    podo_in_progress = False 
-
-    for i in range(len(data)):
-        if data[i] > 550:
-            if podo_in_progress == False :
-                podo_in_progress = True
-                 pas += 1
-        else:
-            podo_in_progress = False
-    return pas
-
-def podo (x, y, z):
-    data = []
-    for  i in range(len(x)):
-        data.append(sqrt(x[i]*x[i]+y[i]*y[i]+z[i]*z[i]))
-    check_podo( data)
 
 def check_qrs(data):
     j = 0
@@ -130,9 +113,10 @@ def AcquireSamples(nSamples=1000):
                 
                 hr = heart_rate (res[:,-2])
 
-                pas = podo( res[:,-1], res[:,-3], res[:,-4])
+                step = step_calc( res[:,-1], res[:,-3], res[:,-4])
 
-                format2json(hr, hr)
+                format2json(hr, step)
+
 
 		#print device.read(nSamples)[0][5]
 		#for j in range(0,10):
