@@ -132,6 +132,8 @@ def AcquireSamples(nSamples=1000):
 
                 pas = podo( res[:,-1], res[:,-3], res[:,-4])
 
+                format2json(hr, hr)
+
 		#print device.read(nSamples)[0][5]
 		#for j in range(0,10):
 		#	samples.append(device.read(nSamples)[j][5])
@@ -153,8 +155,8 @@ def format2json(listrate, listpodo):
 	header = {'Content-Type': 'OpenHeart/json'}
 	record = {'rate':listrate, 'podo':listpodo}
 
-	values = [{"rate": k, "podo": v} for k, v in record.items()]
-	formattedData = json.dumps(values, indent=4)
+#	values = [{"rate": k, "podo": v} for k, v in record.items()]
+	formattedData = json.dumps(record, indent=4)
 
 	print formattedData
 
