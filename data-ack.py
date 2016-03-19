@@ -21,18 +21,35 @@ import requests
 import json
 import sys
 
+
+from math import *
 from termcolor import colored
 
-colored
-
-
-qrs_in_progress = False
 hr_current = 0
+
+def check_podo(data):
+    pas = 0
+    podo_in_progress = False 
+
+    for i in range(len(data)):
+        if data[i] > 550:
+            if podo_in_progress == False :
+                podo_in_progress = True
+                 pas += 1
+        else:
+            podo_in_progress = False
+    return pas
+
+def podo (x, y, z):
+    data = []
+    for  i in range(len(x)):
+        data.append(sqrt(x[i]*x[i]+y[i]*y[i]+z[i]*z[i]))
+    check_podo( data)
 
 def check_qrs(data):
     j = 0
     qrs_detected = []
-    global qrs_in_progress
+    qrs_in_progress = False 
 
     for i in range(len(data)):
 
@@ -78,7 +95,7 @@ def heart_rate(data, frequency = 100.):
 
 
 def ConnectBitalino(macAddress, batThresh=30, frequency=100):
-	acqChannels = [2]
+	acqChannels = [0,1,2,3]
 	digitalOutput = [0,0,0,0]
 
 	global device
@@ -109,13 +126,11 @@ def AcquireSamples(nSamples=1000):
 
 	# Read samples
 	while True:
-		res = device.read(nSamples)[:,-1]
+		res = device.read(nSamples)
+                
+                hr = heart_rate (res[:,-2])
 
-                hr = heart_rate (res)
-                print hr
-
-                format2json(hr, hr)
-
+                pas = podo( res[:,-1], res[:,-3], res[:,-4])
 
 		#print device.read(nSamples)[0][5]
 		#for j in range(0,10):
@@ -160,8 +175,8 @@ def ecgMode(extra, option=0):
 
 	try:
 #		ConnectBitalino("20:15:10:26:65:41")
-#		ConnectBitalino("20:15:10:26:64:85")
-		ConnectBitalino("20:15:10:26:61:75")
+		ConnectBitalino("20:15:10:26:64:85")
+#		ConnectBitalino("20:15:10:26:61:75")
 		AcquireSamples()
 		while True:
 			pass
@@ -226,6 +241,9 @@ if __name__ == '__main__':
 	if len(sys.argv) > 3:
 		option = int(sys.argv[3])
 
+	global dataFile
+	dataFile = open("mockup.data", "w")
+
 	if command in command_map:
 		command_map[command](sys.argv[2:], option)
 	else:
@@ -236,8 +254,6 @@ if __name__ == '__main__':
 
 
 
-	global dataFile
-	dataFile = open("mockup.data", "w")
 
 	try:
 		SimulatedData()
