@@ -114,6 +114,8 @@ def AcquireSamples(nSamples=1000):
                 hr = heart_rate (res)
                 print hr
 
+                format2json(hr, hr)
+
 
 		#print device.read(nSamples)[0][5]
 		#for j in range(0,10):
