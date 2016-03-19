@@ -160,7 +160,8 @@ def ecgMode(extra, option=0):
 
 	try:
 #		ConnectBitalino("20:15:10:26:65:41")
-		ConnectBitalino("20:15:10:26:64:85")
+#		ConnectBitalino("20:15:10:26:64:85")
+		ConnectBitalino("20:15:10:26:61:75")
 		AcquireSamples()
 		while True:
 			pass
