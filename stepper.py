@@ -32,6 +32,8 @@ def stepper(x, y, z):
 
 	print "Number of steps : %d"%(steps)
 
+	return steps
+
 
 if __name__ == '__main__':
 	print sys.argv[1]
