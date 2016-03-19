@@ -21,42 +21,49 @@ import requests
 import json
 import sys
 
+from termcolor import colored
 
+colored
 
-def ConnectBitalino(macAddress, batThresh=30, sampleRate=1000, nSamples=10):
-	acqChannels = [2]
+def ConnectBitalino(macAddress, batThresh=30, sampleRate=1000):
+	acqChannels = [3]
 	digitalOutput = [0,0,1,1]
 
 	global device
 	device = bitalino.BITalino(macAddress)
 	device.battery(batThresh)
-	device.version()
+	print colored("Connected to : %s"%(device.version()), "green")
 
 	device.start(sampleRate, acqChannels)
 
 
 def DisconnectBitalino():
 	global device
-	device.stop()
-	device.close()()
+
+	print colored("Disconnecting device", "red")
+
+	if device is not None:
+		device.stop()
+		device.close()
 
 
-def AcauireSamples():
+def AcquireSamples(nSamples=10):
 	global device
+
+	colored("Start samples acauisition", "green")
 
 	samples = []
 	i=0
 
 	# Read samples
 	while True:
-		while(i<200):
-			#print device.read(nSamples)
-			#print device.read(nSamples)[0][5]
-			for j in range(0,10):
-				samples.append(device.read(nSamples)[j][5])
+		print device.read(nSamples)
+		time.sleep(1)
+		#print device.read(nSamples)[0][5]
+		#for j in range(0,10):
+		#	samples.append(device.read(nSamples)[j][5])
 
-				format2json(samples, samples)
-			i+=1
+		#	format2json(samples, samples)
 
 
 
@@ -91,12 +98,14 @@ def mockupMode(extra, option=0):
 
 def ecgMode(extra, option=0):
 	global outputMode
-	print "Output Mode : %s"%(outputMode)
+	print colored("Output Mode : %s"%(outputMode), "yellow")
 
 	try:
 		ConnectBitalino("20:15:10:26:65:41")
-		AcauireSamples()
-	except:
+		AcquireSamples()
+		while True:
+			pass
+	except KeyboardInterrupt:
 		DisconnectBitalino()
 		sys.exit(0)
 
