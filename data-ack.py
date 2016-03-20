@@ -110,12 +110,28 @@ def AcquireSamples(nSamples=1000):
 	# Read samples
 	while True:
 		res = device.read(nSamples)
-                
+                    
+                """
+                for item in res[:,-2]:
+                    dataFile.write("%s\n" % item)
+                for item in res[:,-1]:
+                    dataFile.write("%s\n" % item)
+                for item in res[:,-3]:
+                    dataFile.write("%s\n" % item)
+                for item in res[:,-4]:
+                    dataFile.write("%s\n" % item)
+
+
+                print "END"
+                """
+
                 hr = heart_rate (res[:,-2])
 
                 step = step_calc( res[:,-1], res[:,-3], res[:,-4])
 
                 format2json(hr, step)
+
+                #dataFile.close()
 
 
 		#print device.read(nSamples)[0][5]
